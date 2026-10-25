@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0c0c0e">
+
+<!-- ── Installable web app (iOS "Add to Home Screen") ── -->
+<meta name="application-name" content="12-Week Recomp">
+<meta name="apple-mobile-web-app-title" content="Recomp">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/favicon.png" sizes="64x64">
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
+<link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="./splash/splash-750x1334.png">
+<link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="./splash/splash-1242x2208.png">
+<link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="./splash/splash-1125x2436.png">
+<link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="./splash/splash-828x1792.png">
+<link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="./splash/splash-1242x2688.png">
+<link rel="apple-touch-startup-image" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="./splash/splash-1170x2532.png">
+<link rel="apple-touch-startup-image" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="./splash/splash-1284x2778.png">
+<link rel="apple-touch-startup-image" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="./splash/splash-1179x2556.png">
+<link rel="apple-touch-startup-image" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="./splash/splash-1290x2796.png">
+<link rel="apple-touch-startup-image" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="./splash/splash-1206x2622.png">
+<link rel="apple-touch-startup-image" media="(device-width: 420px) and (device-height: 912px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="./splash/splash-1260x2736.png">
+<link rel="apple-touch-startup-image" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="./splash/splash-1320x2868.png">
+<style>
+/* ── standalone-app polish ── */
+html{overscroll-behavior-y:none;-webkit-overflow-scrolling:touch}
+body{-webkit-user-select:none;user-select:none}
+input,textarea{-webkit-user-select:text;user-select:text}
+header.top,.tabs,.btn,.weeks button,.weeks select,.seg button,dialog .chips button{-webkit-touch-callout:none}
+@media (display-mode:standalone){
+  body{min-height:100svh}
+  /* in-app there is no browser chrome: give the header a hairline */
+  header.top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+    background:linear-gradient(90deg,transparent,var(--line),transparent);opacity:.6}
+}
+</style>
+
+<title>12-Week Recomp</title>
+<meta name="description" content="12-week training, body weight and meal tracker. Works offline.">
+<style>
+:root{--bg:#0c0c0e;--s1:#16161a;--s2:#202027;--line:#2d2d36;--tx:#f2f2f5;--mu:#a0a0ae;--ac:#d7f25a;--acd:#1b2108;--bad:#ff8a7a;--r:16px;--r2:10px;--tab:64px;
+--sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;background:var(--bg);color-scheme:dark}
+body{font-family:var(--sans);background:var(--bg);color:var(--tx);min-height:100vh;min-height:100svh;font-size:1rem;line-height:1.55;-webkit-tap-highlight-color:transparent;padding-bottom:calc(var(--tab) + 28px + env(safe-area-inset-bottom,0px))}
+button,input,textarea{font:inherit;color:inherit;touch-action:manipulation}
+button{background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--ac);color:#111;padding:10px 14px;border-radius:8px;z-index:50}.skip:focus{left:8px}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+header.top{position:sticky;top:0;z-index:20;background:rgba(12,12,14,.92);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);padding-top:env(safe-area-inset-top,0px)}
+.hrow{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding-top:14px;padding-bottom:10px}
+h1{font-size:1.75rem;line-height:1.1;font-weight:800;letter-spacing:-.03em}
+.sub{color:var(--mu);font-size:.875rem}
+.btn{min-height:44px;padding:0 18px;border-radius:999px;background:var(--s2);font-weight:600;font-size:.9375rem}
+.btn.pri{background:var(--ac);color:#12140a}
+.btn:active{transform:scale(.97)}
+.weeks{display:grid;grid-template-columns:48px 1fr 48px;gap:10px;padding:2px 16px 12px;max-width:640px;margin:0 auto}
+.weeks[hidden]{display:none}
+.weeks button{min-height:48px;border-radius:14px;background:var(--s1);color:var(--tx);font-size:1.5rem;line-height:1}
+.weeks button:disabled{opacity:.3}
+.weeks select{width:100%;min-height:48px;border-radius:14px;background:var(--s1);border:1px solid var(--line);color:var(--tx);font-weight:700;font-size:1rem;padding:0 12px;text-align:center;text-align-last:center}
+main{padding-top:6px;animation:in .2s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:var(--s1);padding:5px;border-radius:14px;margin-bottom:14px}
+.seg.c2{grid-template-columns:repeat(2,1fr)}.seg.c3{grid-template-columns:repeat(3,1fr)}
+.seg button{min-height:44px;border-radius:10px;color:var(--mu);font-weight:600;font-size:.9375rem}
+.seg button[aria-pressed=true]{background:var(--s2);color:var(--ac)}
+.card{background:var(--s1);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.ex h3{font-size:1.0625rem;letter-spacing:-.01em;line-height:1.3}
+.exh{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.pr{background:var(--ac);color:#12140a;font-size:.75rem;font-weight:800;padding:2px 9px;border-radius:99px}
+.meta{color:var(--mu);font-size:.875rem;margin:2px 0 10px}
+.last{font-size:.8125rem;color:var(--mu);margin-bottom:8px;font-variant-numeric:tabular-nums}
+.sets{display:grid;grid-template-columns:repeat(var(--c,3),1fr);gap:8px}
+.mrow{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:2px 0 10px}.mrow .meta{margin:0}
+.step{display:flex;align-items:center;background:var(--s2);border-radius:99px;flex:0 0 auto}
+.step button{width:44px;height:44px;border-radius:99px;font-size:1.25rem;font-weight:700;color:var(--ac)}
+.step button:disabled{opacity:.3}
+.step b{min-width:62px;text-align:center;font-size:.875rem;font-variant-numeric:tabular-nums}
+input[type=text],input[type=number],textarea{width:100%;min-height:46px;background:var(--bg);border:1px solid var(--line);border-radius:var(--r2);padding:8px 12px;font-size:1rem;-webkit-appearance:none;appearance:none}
+input.set{text-align:center;font-variant-numeric:tabular-nums}
+input.set:not(:placeholder-shown),input.filled{border-color:#55612a}
+::placeholder{color:#6d6d7a}
+.note{margin-top:8px}
+details summary{list-style:none;cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--mu);font-size:.875rem;font-weight:600}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:"+";margin-left:auto;font-size:1.25rem;color:var(--ac)}
+details[open]>summary::after{content:"-"}
+details p{color:var(--mu);font-size:.9375rem;padding-bottom:8px}
+.prog{color:var(--mu);font-size:.875rem;margin:0 2px 12px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.stat{background:var(--s1);border-radius:var(--r);padding:14px 16px}
+.stat b{display:block;font-size:1.75rem;line-height:1.15;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.stat span{color:var(--mu);font-size:.8125rem}
+.day{display:grid;grid-template-columns:44px 104px 1fr;gap:8px;align-items:center;margin-bottom:8px}
+.day label{color:var(--mu);font-weight:600;font-size:.9375rem}
+h2{font-size:1.125rem;letter-spacing:-.02em;margin:22px 2px 10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wc{background:var(--s1);border-radius:var(--r);padding:12px 14px;text-align:left;min-height:64px}
+.wc b{display:block;font-variant-numeric:tabular-nums}.wc span{color:var(--mu);font-size:.8125rem}
+.up{color:var(--bad)}.down{color:var(--ac)}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px;padding-bottom:10px}
+.mg label{font-size:.8125rem;color:var(--mu)}
+.meal{display:grid;grid-template-columns:1fr auto;gap:2px 12px}
+.meal.wo{background:var(--acd);outline:1px solid #55612a}
+.meal .t{color:var(--ac);font-size:.8125rem;font-weight:700}
+.meal h3{font-size:1rem}.meal p{grid-column:1/-1;color:var(--mu);font-size:.9375rem}
+.meal .n{text-align:right;font-variant-numeric:tabular-nums;font-size:.875rem;color:var(--mu)}
+.snk{background:var(--s2);border-radius:12px;padding:12px}.snk b{font-size:.9375rem;display:block}.snk span{color:var(--mu);font-size:.8125rem}
+.hp{margin-bottom:10px}.hp>summary{padding:6px 16px;font-size:1.0625rem;color:var(--tx);font-weight:700}.hp>div{padding:0 16px 14px}
+.q{background:var(--s2);border-radius:12px;padding:12px 14px;margin-bottom:8px}.q b{display:block;margin-bottom:2px}.q span{color:var(--mu);font-size:.9375rem}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(22,22,26,.94);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);display:grid;grid-template-columns:repeat(4,1fr);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));border-radius:20px 20px 0 0}
+nav.tabs button{min-height:52px;border-radius:14px;color:var(--mu);font-weight:700;font-size:.9375rem}
+nav.tabs button[aria-current=page]{color:var(--ac);background:var(--s2)}
+dialog{background:var(--s1);color:var(--tx);border:0;border-radius:24px 24px 0 0;width:100%;max-width:640px;margin:auto auto 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom,0px))}
+dialog::backdrop{background:rgba(0,0,0,.65)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 14px}
+.chips button{min-width:48px;min-height:44px;border-radius:12px;background:var(--s2);font-weight:700;color:var(--mu)}
+.chips button[aria-pressed=true]{background:var(--ac);color:#12140a}
+fieldset{border:0;margin-bottom:14px}legend{font-weight:700;margin-bottom:4px}
+.opt{display:flex;align-items:center;gap:12px;min-height:44px;color:var(--mu)}
+.opt input{width:22px;height:22px;accent-color:#d7f25a}
+.row{display:flex;gap:10px}.row .btn{flex:1}
+#toast{position:fixed;left:16px;right:16px;bottom:calc(var(--tab) + 18px + env(safe-area-inset-bottom,0px));z-index:40;background:var(--tx);color:#111;border-radius:14px;padding:6px 8px 6px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:600;max-width:608px;margin:0 auto;transition:opacity .2s,transform .2s}
+#toast[hidden]{display:none}
+#toast button{min-height:44px;padding:0 14px;font-weight:800;color:#3a4a00}
+textarea{min-height:110px;font-size:1rem}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (hover:hover) and (pointer:fine){.btn:hover,.wk:hover,.wc:hover{filter:brightness(1.15)}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="wrap hrow">
+    <div><h1 id="ttl">Training</h1><p class="sub" id="sub"></p></div>
+    <button class="btn" id="editBtn" type="button">Edit weeks</button>
+  </div>
+  <div class="weeks" role="group" aria-label="Choose week"><button type="button" id="wPrev" aria-label="Previous week">&lsaquo;</button><select id="wSel" aria-label="Week"></select><button type="button" id="wNext" aria-label="Next week">&rsaquo;</button></div>
+</header>
+<main id="main" class="wrap" tabindex="-1"></main>
+<div id="toast" role="status" aria-live="polite" hidden><span></span><button type="button">Undo</button></div>
+<nav class="tabs" aria-label="Sections">
+  <button type="button" data-tab="train">Training</button>
+  <button type="button" data-tab="weight">Weight</button>
+  <button type="button" data-tab="meals">Meals</button>
+  <button type="button" data-tab="help">Help</button>
+</nav>
+
+<dialog id="dlg" aria-labelledby="dt">
+  <h2 id="dt" style="margin-top:0">Edit weeks</h2>
+  <p class="sub">Pick weeks to reset, for example after finishing the 12 weeks.</p>
+  <div class="chips" id="chips"></div>
+  <button class="btn" type="button" id="allBtn" style="margin-bottom:14px">Select all weeks</button>
+  <fieldset><legend>Training logs</legend>
+    <label class="opt"><input type="radio" name="lift" value="keep" checked> Keep weights, clear reps and notes</label>
+    <label class="opt"><input type="radio" name="lift" value="all"> Clear everything</label>
+    <label class="opt"><input type="radio" name="lift" value="none"> Leave alone</label>
+  </fieldset>
+  <fieldset><legend>Body weight log</legend>
+    <label class="opt"><input type="radio" name="bw" value="none" checked> Leave alone</label>
+    <label class="opt"><input type="radio" name="bw" value="clear"> Clear these weeks</label>
+  </fieldset>
+  <div class="row"><button class="btn" type="button" id="cancel">Cancel</button><button class="btn pri" type="button" id="apply">Apply</button></div>
+</dialog>
+
+<script>
+const MEALS={
+// ── PHASE 1 · Weeks 1-4 · ~1,950 cal (this is your current baseline diet) ─────
+p1:{
+ A:[
+  {time:'8:00 AM', name:'Breakfast',     foods:'1 scoop whey protein · 35g dry oats · 300g plain Greek yogurt (0%)',               cal:400, prot:58},
+  {time:'10:30 AM',name:'Pre-Workout Snack', foods:'2 tbsp peanut butter · 1 banana · ½ cup almond milk',                       cal:300, prot:9},
+  {time:'12:00 PM',name:'WORKOUT',      foods:'Train now - PB + banana + almond milk fully fuels a noon session',                cal:0,  prot:0, workout:true},
+  {time:'1:00 PM', name:'Lunch',       foods:'230g chicken breast (cooked wt) · 155g white rice (cooked wt) · 97g broccoli · ½ tsp olive oil', cal:600, prot:75},
+  {time:'7:00 PM', name:'Dinner',       foods:'226g 96/4 lean ground beef (cooked wt) · 155g white rice (cooked wt) · ½ tsp olive oil',     cal:580, prot:62},
+  {time:'9:00 PM', name:'Night Snack',    foods:'113g cottage cheese (2%) · pickles freely',                            cal:95, prot:13},
+ ],
+ B:[
+  {time:'8:00 AM', name:'Breakfast',     foods:'1 scoop whey protein · 35g dry oats · 300g plain Greek yogurt (0%)',               cal:400, prot:58},
+  {time:'10:30 AM',name:'Snack',       foods:'2 tbsp peanut butter · 1 banana · ½ cup almond milk',                       cal:300, prot:9},
+  {time:'1:00 PM', name:'Lunch',       foods:'230g chicken breast (cooked wt) · 155g white rice (cooked wt) · 97g broccoli · ½ tsp olive oil', cal:600, prot:75},
+  {time:'7:00 PM', name:'Dinner',       foods:'226g 96/4 lean ground beef (cooked wt) · 155g white rice (cooked wt) · ½ tsp olive oil',     cal:580, prot:62},
+  {time:'9:00 PM', name:'Night Snack',    foods:'113g cottage cheese (2%) · pickles freely',                            cal:95, prot:13},
+ ]
+},
+// ── PHASE 2 · Weeks 5-9 · ~1,800 cal - PB comes out of the pre-workout ────────
+p2:{
+ A:[
+  {time:'8:00 AM', name:'Breakfast',     foods:'1 scoop whey protein · 35g dry oats · 300g plain Greek yogurt (0%)',               cal:400, prot:58},
+  {time:'10:30 AM',name:'Pre-Workout Snack', foods:'1 banana · ½ cup almond milk (no peanut butter - add a small handful of pretzels if this feels too light)', cal:120, prot:2},
+  {time:'12:00 PM',name:'WORKOUT',      foods:'Train now - banana + almond milk still gives fast carbs pre-session',               cal:0,  prot:0, workout:true},
+  {time:'1:00 PM', name:'Lunch',       foods:'230g chicken breast (cooked wt) · 155g white rice (cooked wt) · 97g broccoli · ½ tsp olive oil', cal:600, prot:75},
+  {time:'7:00 PM', name:'Dinner',       foods:'226g 96/4 lean ground beef (cooked wt) · 155g white rice (cooked wt) · ½ tsp olive oil',     cal:580, prot:62},
+  {time:'9:00 PM', name:'Night Snack',    foods:'113g cottage cheese (2%) · pickles freely',                            cal:95, prot:13},
+ ],
+ B:[
+  {time:'8:00 AM', name:'Breakfast',     foods:'1 scoop whey protein · 35g dry oats · 300g plain Greek yogurt (0%)',               cal:400, prot:58},
+  {time:'10:30 AM',name:'Snack',       foods:'1 banana · ½ cup almond milk (no peanut butter)',                         cal:120, prot:2},
+  {time:'1:00 PM', name:'Lunch',       foods:'230g chicken breast (cooked wt) · 155g white rice (cooked wt) · 97g broccoli · ½ tsp olive oil', cal:600, prot:75},
+  {time:'7:00 PM', name:'Dinner',       foods:'226g 96/4 lean ground beef (cooked wt) · 155g white rice (cooked wt) · ½ tsp olive oil',     cal:580, prot:62},
+  {time:'9:00 PM', name:'Night Snack',    foods:'113g cottage cheese (2%) · pickles freely',                            cal:95, prot:13},
+ ]
+},
+// ── PHASE 3 · Weeks 10-12 · ~1,730 cal - oats drop at breakfast ───────────────
+p3:{
+ A:[
+  {time:'8:00 AM', name:'Breakfast',     foods:'1 scoop whey protein · 18g dry oats (down from 35g) · 300g plain Greek yogurt (0%)',       cal:335, prot:55},
+  {time:'10:30 AM',name:'Pre-Workout Snack', foods:'1 banana · ½ cup almond milk (no peanut butter)',                         cal:120, prot:2},
+  {time:'12:00 PM',name:'WORKOUT',      foods:'Train now - banana + almond milk still gives fast carbs pre-session',               cal:0,  prot:0, workout:true},
+  {time:'1:00 PM', name:'Lunch',       foods:'230g chicken breast (cooked wt) · 155g white rice (cooked wt) · 97g broccoli · ½ tsp olive oil', cal:600, prot:75},
+  {time:'7:00 PM', name:'Dinner',       foods:'226g 96/4 lean ground beef (cooked wt) · 155g white rice (cooked wt) · ½ tsp olive oil',     cal:580, prot:62},
+  {time:'9:00 PM', name:'Night Snack',    foods:'113g cottage cheese (2%) · pickles freely',                            cal:95, prot:13},
+ ],
+ B:[
+  {time:'8:00 AM', name:'Breakfast',     foods:'1 scoop whey protein · 18g dry oats (down from 35g) · 300g plain Greek yogurt (0%)',       cal:335, prot:55},
+  {time:'10:30 AM',name:'Snack',       foods:'1 banana · ½ cup almond milk (no peanut butter)',                         cal:120, prot:2},
+  {time:'1:00 PM', name:'Lunch',       foods:'230g chicken breast (cooked wt) · 155g white rice (cooked wt) · 97g broccoli · ½ tsp olive oil', cal:600, prot:75},
+  {time:'7:00 PM', name:'Dinner',       foods:'226g 96/4 lean ground beef (cooked wt) · 155g white rice (cooked wt) · ½ tsp olive oil',     cal:580, prot:62},
+  {time:'9:00 PM', name:'Night Snack',    foods:'113g cottage cheese (2%) · pickles freely',                            cal:95, prot:13},
+ ]
+}};
+
+const EXERCISES={push:[{name:'Push-up or Dumbbell Press',note:'Flat or incline - chest/front delt. 3 sec controlled descent.',sets:'3-4',reps:'8-12',rest:'60s'},{name:'Overhead Press',note:'Dumbbells or barbell. Brace core, do not arch back.',sets:'3',reps:'8-10',rest:'60s'},{name:'Lateral Raise',note:'Light dumbbells - side delts. Lead with elbows not wrists.',sets:'3',reps:'12-15',rest:'45s'},{name:'Tricep Dip or Skull Crusher',note:'Bench dip or EZ bar. Elbows in, control the descent.',sets:'3',reps:'10-12',rest:'60s'},{name:'Plank Hold',note:'Core bracing - full body tension. Do not let hips sag.',sets:'3',reps:'30-60s',rest:'45s'}],pull:[{name:'Pull-up or Dumbbell Row',note:'Use band if needed. Initiate with shoulder blades.',sets:'3-4',reps:'6-10',rest:'60s'},{name:'Bent-Over Dumbbell Row',note:'Mid back - flat spine, hinge forward. Control the descent.',sets:'3',reps:'8-12',rest:'60s'},{name:'Rear Delt Fly',note:'Light dumbbells - posture muscles. Bend forward 45deg, arms wide.',sets:'3',reps:'12-15',rest:'45s'},{name:'Dumbbell Curl',note:'Alternate arms - biceps. Do not swing the torso.',sets:'3',reps:'10-12',rest:'45s'},{name:'Hammer Curl',note:'Neutral grip - brachialis. Palms face each other.',sets:'2',reps:'10-12',rest:'45s'}],legs:[{name:'Goblet Squat or Back Squat',note:'Dumbbell or barbell. Sit back not forward. Knees track toes.',sets:'4',reps:'8-12',rest:'90s'},{name:'Romanian Deadlift (RDL)',note:'Hinge at hip - push hips back, back flat. Feel hamstring stretch.',sets:'3',reps:'8-10',rest:'75s'},{name:'Reverse Lunge',note:'Single leg - step back, back knee near floor. Keep torso upright.',sets:'3',reps:'8-10 ea',rest:'60s'},{name:'Hip Thrust or Glute Bridge',note:'Dumbbell on hips - drive through heels. Full hip extension at top.',sets:'3',reps:'12-15',rest:'60s'},{name:'Calf Raise',note:'Off a step - full range of motion. Pause at top, control descent.',sets:'3',reps:'15-20',rest:'45s'}],full:[{name:'Deadlift or Trap Bar Deadlift',note:'Push the floor away - brace core before every rep. Add weight weekly.',sets:'3-4',reps:'5-8',rest:'90s'},{name:'Dumbbell Press (flat or incline)',note:'Upper push - chest and shoulders. Control the descent.',sets:'3',reps:'8-10',rest:'60s'},{name:'Dumbbell Row',note:'Upper pull - flat back, row to hip. One arm at a time.',sets:'3',reps:'8-10',rest:'60s'},{name:'Farmer Carry or Suitcase Carry',note:'Grip, core, traps. Walk tall no waddling. 30-40 yards per set.',sets:'3',reps:'30-40yd',rest:'60s'},{name:'Ab Wheel or Hanging Knee Raise',note:'Core - controlled, no momentum. Roll out only as far as form holds.',sets:'3',reps:'8-12',rest:'45s'}]};
+
+const SNACKS=[{name:'Dill Pickles (freely)',cal:5,prot:'0g',use:'Free anytime - zero calorie impact, eat whenever hungry',free:true},{name:'Sourdough 1 slice',cal:150,prot:'5g',use:'Phase 1 snack only. Dropped in Phase 2.',free:false},{name:'Peanut Butter 2 tbsp',cal:180,prot:'7g',use:'Daily snack - every phase. Never cut this.',free:false},{name:'Banana medium',cal:105,prot:'1g',use:'Daily snack - every phase. Fast carbs before workout.',free:false},{name:'Cottage Cheese ½ cup (113g)',cal:97,prot:'13g',use:'Daily snack - every phase. Slow protein.',free:false},{name:'Full P1 Snack (all 4)',cal:532,prot:'26g',use:'Sourdough + PB + banana + cottage cheese',free:false},{name:'Full P2/P3 Snack (3 items)',cal:382,prot:'21g',use:'PB + banana + cottage cheese (no sourdough)',free:false},{name:'Celery / cucumbers',cal:10,prot:'0g',use:'Free anytime - pure volume, zero calories',free:true}];
+
+const MILESTONES=[{weeks:'1-2',phase:'p1',label:'Foundation',text:'Lock in your 4 workout days. <strong>Do not skip</strong> - a mediocre workout beats zero. Start tracking food. Hit protein every day. Rice portions are 1 cup at both lunch and dinner. Expect soreness - it diminishes by Week 3.'},{weeks:'3-4',phase:'p1',label:'Foundation',text:'Begin adding weight when form is consistent. Take Week 1 measurements. <strong>Target: scale down 1-3 lbs.</strong> If scale has not moved, protein is likely too low. You are eating ~2,150 cal - this is correct.'},{weeks:'5-6',phase:'p2',label:'Progression',text:'Increase primary compounds to 4 sets. Calories drop to ~2,050. Dinner rice moves to ¾ cup. Sourdough comes out of the pre-workout snack - PB + banana only. <strong>You should be lifting noticeably more than Week 1.</strong>'},{weeks:'7',phase:'p2',label:'Progression',text:'Push intensity - try for 1-2 extra reps per set. Keep protein consistent. <strong>Scale target: down 5-8 lbs from starting weight.</strong>'},{weeks:'8',phase:'deload',label:'Deload',text:'<strong>Mandatory recovery week.</strong> Drop all weights by 40% and reduce sets to 2. Do not skip - muscles grow during recovery. This is when Week 6-7 hard work pays off.'},{weeks:'9',phase:'p2',label:'Progression',text:'Come back stronger after the deload. <strong>Most people hit personal records in the week after a deload.</strong> Your nervous system is fresh.'},{weeks:'10-12',phase:'p3',label:'Peak Recomp',text:'Drop to ~1,900 calories. Lunch rice → ¾ cup. Oats drop from 50g to 35g. Add slow 3-4 second eccentrics on every rep. <strong>Target by Week 12: down 10-14 lbs, visibly more muscular, all lifts significantly stronger than Week 1.</strong>'}];
+
+const PRIORITIES=[{n:'1',f:'Protein (190g)',w:'Without enough protein your body cannot build muscle and will sacrifice muscle for energy in a deficit.'},{n:'2',f:'Workout consistency',w:'Showing up 4 days/week for 12 weeks beats sporadic intense weeks. Frequency beats intensity.'},{n:'3',f:'Progressive overload',w:'Muscles only grow if challenged progressively. Track and beat your last session.'},{n:'4',f:'Total calories',w:'Matters for fat loss but secondary to protein. Hit protein first, then fit carbs and fat in the remaining budget.'},{n:'5',f:'Sleep and recovery',w:'Growth hormone peaks during sleep. Cutting sleep kills recovery, strength, and fat loss.'},{n:'6',f:'Specific food choices',w:'Chicken vs beef vs turkey matters far less than hitting your macros consistently.'}];
+
+const SITUATIONS=[{q:'Hungry between meals',a:'Pickles, celery, cucumber - eat freely. This is built into the plan. Zero guilt.'},{q:'Went over calories',a:'Do not restrict the next day. Hit protein target and let the weekly average absorb it.'},{q:'Scale flat for 2+ weeks',a:'Check weekend eating first. Then trim ¼ cup rice from dinner. Do not touch the pre-workout meal or breakfast.'},{q:'Lifts stalling + low energy',a:'Recovery issue. Eat at the prior phase calories for one week, then step back down.'},{q:'Eating out',a:'Grilled chicken or beef, no bun, side salad with oil dressing. Hit protein. Skip anything fried.'},{q:'Craving something sweet',a:'Banana with peanut butter handles it without breaking the plan. Or Greek yogurt with cinnamon.'},{q:'Not hungry at 10:30 AM pre-workout',a:'Eat it anyway. Going into your session without fuel means reduced performance and muscle signal.'},{q:'Out of peanut butter or bananas',a:'Get more same day - these are non-negotiable pre-workout fuel. Nothing fully substitutes.'},{q:'Out of sourdough (Phase 1)',a:'Sub 1 slice of any whole grain bread, or skip bread and just do PB + banana. Still works.'},{q:'Feeling flat and tired',a:'Brief calorie bump (200 extra cal for 3-4 days) often restores energy without breaking fat loss momentum.'},{q:'Gaining weight rapidly',a:'Check for hidden sodium or alcohol (both cause major water retention). True fat gain requires 500+ cal over maintenance daily.'}];
+
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const load=k=>{try{return JSON.parse(localStorage.getItem(k)||'{}')||{}}catch(e){return {}}};
+const save=(k,o)=>{try{localStorage.setItem(k,JSON.stringify(o))}catch(e){}};
+let LD=load('ld2'),WD=load('wd2'),MD=load('md2');
+const dow=new Date().getDay(),auto={1:'push',2:'pull',4:'legs',5:'full'}[dow]||'push';
+const S0=load('ui3');
+const st={tab:'train',week:S0.week>=1&&S0.week<=12?S0.week:1,day:auto,phase:S0.phase||1,dt:[1,2,4,5].includes(dow)?'A':'B'};
+const keepUI=()=>save('ui3',{week:st.week,phase:st.phase});
+const WEEKS=12,DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const PH=w=>w<=4?1:w<=9?2:3;
+const LBL=w=>w==8?'Deload week':['','Foundation','Progression','Peak recomp'][PH(w)];
+const exKey=n=>n.replace(/[^a-zA-Z0-9]/g,'-').toLowerCase();
+const pw=s=>{const m=String(s||'').match(/(\d+\.?\d*)/);return m?parseFloat(m[1]):0};
+const SK=['s1','s2','s3','s4','s5','s6'];let SC=load('sc3');
+const defSets=e=>{const m=String(e.sets).match(/\d+/g);return m?Math.max(...m.map(Number)):3};
+const best=c=>c?Math.max(0,...SK.map(s=>pw(c[s]))):0;
+function isPR(k,w){const ld=LD[k]||{},c=ld['w'+w],m=best(c);if(!m)return false;for(let p=1;p<w;p++)if(best(ld['w'+p])>=m)return false;return true}
+function avg(w){const d=WD['w'+w]||{},v=DAYS.map((_,i)=>parseFloat(d['d'+i])).filter(x=>!isNaN(x));return v.length?v.reduce((a,b)=>a+b,0)/v.length:null}
+const f1=n=>n==null?'-':n.toFixed(1);
+const hasWk=w=>Object.values(LD).some(e=>e['w'+w]&&SK.some(s=>e['w'+w][s]))||avg(w)!=null;
+
+function drawWeeks(){
+  $('#wSel').innerHTML=Array.from({length:WEEKS},(_,i)=>i+1).map(w=>`<option value="${w}"${w==st.week?' selected':''}>Week ${w} of ${WEEKS}${hasWk(w)?' (logged)':''}</option>`).join('');
+  $('#wPrev').disabled=st.week<=1;$('#wNext').disabled=st.week>=WEEKS;
+}
+function train(){
+  const w=st.week,list=EXERCISES[st.day];let done=0;
+  const cards=list.map(e=>{
+    const k=exKey(e.name),c=(LD[k]||{})['w'+w]||{},p=(LD[k]||{})['w'+(w-1)];
+    if(SK.some(s=>c[s]))done++;const used=SK.reduce((a,s,i)=>c[s]?i+1:a,0),n=Math.min(6,Math.max(SC[k]||defSets(e),used)),cols=n<=4?n:3;
+    const pl=p?SK.map(s=>p[s]).filter(Boolean):[];const last=pl.length?`<p class="last">Last week: ${pl.map(esc).join(', ')}</p>`:'';
+    const ins=SK.slice(0,n).map((s,i)=>`<input class="set" type="text" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" enterkeyhint="next" placeholder="Set ${i+1}" aria-label="${esc(e.name)} set ${i+1}, week ${w}" value="${esc(c[s])}" data-k="${k}" data-s="${s}">`).join('');
+    return `<article class="card ex"><div class="exh"><h3>${esc(e.name)}</h3><span class="pr" id="pr-${k}" ${isPR(k,w)?'':'hidden'}>PR</span></div><div class="mrow"><p class="meta">${e.reps} reps, rest ${e.rest}</p><div class="step" role="group" aria-label="Number of sets"><button type="button" data-sc="${k}" data-d="-1" aria-label="Fewer sets"${n<=1?' disabled':''}>-</button><b>${n} sets</b><button type="button" data-sc="${k}" data-d="1" aria-label="More sets"${n>=6?' disabled':''}>+</button></div></div>${last}<div class="sets" style="--c:${cols}">${ins}</div><input class="note" type="text" enterkeyhint="done" placeholder="Notes for this week" aria-label="Notes for ${esc(e.name)}, week ${w}" value="${esc(c.note)}" data-k="${k}" data-ln="1"><details><summary>Form cue</summary><p>${esc(e.note)}</p></details></article>`;
+  }).join('');
+  const names={push:'Push',pull:'Pull',legs:'Legs',full:'Full body'};
+  return `<div class="seg" role="group" aria-label="Workout day">${Object.keys(names).map(d=>`<button type="button" data-day="${d}" aria-pressed="${d==st.day}">${names[d]}</button>`).join('')}</div><p class="prog">${done} of ${list.length} logged this week. Write weight x reps, like 135x8. Beat last week by one rep.</p>${cards}`;
+}
+function weight(){
+  const w=st.week,d=WD['w'+w]||{},a=avg(w);let pv=null;for(let p=w-1;p>=1;p--){if(avg(p)!=null){pv=avg(p);break}}
+  const dl=a!=null&&pv!=null?a-pv:null;
+  const rows=DAYS.map((n,i)=>`<div class="day"><label for="w${i}">${n}</label><input id="w${i}" type="number" inputmode="decimal" step="0.1" enterkeyhint="next" placeholder="lbs" value="${esc(d['d'+i])}" data-wd="${i}"><input type="text" enterkeyhint="done" placeholder="Note" aria-label="${n} note" value="${esc(d['n'+i])}" data-wn="${i}"></div>`).join('');
+  const all=Array.from({length:WEEKS},(_,i)=>i+1).map(x=>{const v=avg(x);let q=null;for(let p=x-1;p>=1;p--){if(avg(p)!=null){q=avg(p);break}}const dd=v!=null&&q!=null?v-q:null;return `<button type="button" class="wc" data-wk="${x}"><span>Week ${x}</span><b>${v==null?'-':f1(v)}</b>${dd==null?'':`<span class="${dd>0?'up':'down'}">${dd>0?'+':''}${dd.toFixed(1)}</span>`}</button>`}).join('');
+  const CP=['Week 1','Week 4','Week 8','Week 12'],MF=[['waist','Waist'],['chest','Chest'],['arm_r','Arm relaxed'],['arm_f','Arm flexed'],['thigh','Thighs']];
+  const meas=CP.map((c,i)=>`<details class="card"><summary>${c} measurements (in)</summary><div class="mg">${MF.map(([k,l])=>`<div><label for="m${i}${k}">${l}</label><input id="m${i}${k}" type="number" inputmode="decimal" step="0.1" value="${esc((MD[k]||{})[i])}" data-m="${k}" data-i="${i}"></div>`).join('')}</div></details>`).join('');
+  return `<div class="stats"><div class="stat"><span>Week ${w} average</span><b id="avg">${a==null?'-':f1(a)}</b></div><div class="stat"><span>Vs last logged week</span><b id="dlt">${dl==null?'-':(dl>0?'+':'')+dl.toFixed(1)}</b></div></div><div class="card">${rows}</div><p class="prog">Weigh after waking and the bathroom. The weekly average is your real weight.</p><h2>All weeks</h2><div class="grid2">${all}</div><h2>Body measurements</h2>${meas}`;
+}
+function meals(){
+  const base=MEALS['p'+st.phase].A,A=st.dt=='A';
+  const list=A?base:base.filter(m=>!m.workout).map(m=>({...m,name:m.name.replace('Pre-Workout Snack','Snack')}));
+  const cal=list.filter(m=>!m.workout).reduce((s,m)=>s+m.cal,0),pr=list.reduce((s,m)=>s+m.prot,0);
+  const tot=p=>MEALS['p'+p].A.filter(m=>!m.workout).reduce((s,m)=>s+m.cal,0);
+  return `<div class="seg c3" role="group" aria-label="Phase">${[1,2,3].map(p=>`<button type="button" data-ph="${p}" aria-pressed="${p==st.phase}">Phase ${p}<br><small>${tot(p)} cal</small></button>`).join('')}</div><div class="seg c2" role="group" aria-label="Day type"><button type="button" data-dt="A" aria-pressed="${A}">Workout day</button><button type="button" data-dt="B" aria-pressed="${!A}">Rest day</button></div><div class="stats"><div class="stat"><span>Calories</span><b>${cal}</b></div><div class="stat"><span>Protein</span><b>${pr}g</b></div></div>${list.map(m=>`<article class="card meal${m.workout?' wo':''}"><span class="t">${esc(m.time)}</span><span class="n">${m.cal?m.cal+' cal, '+m.prot+'g':''}</span><h3>${esc(m.name)}</h3><p>${esc(m.foods)}</p></article>`).join('')}<p class="prog">Pickles, celery and cucumbers are free anytime.</p>`;
+}
+function help(){
+  const S=(t,b,o)=>`<details class="card hp"${o?' open':''}><summary>${t}</summary><div>${b}</div></details>`;
+  return S('When things go off plan',SITUATIONS.map(s=>`<div class="q"><b>${esc(s.q)}</b><span>${esc(s.a)}</span></div>`).join(''),1)
+  +S('Snack choices and free foods','<div class="grid2">'+SNACKS.map(s=>`<div class="snk"><b>${esc(s.name)}</b><span>${s.cal} cal, ${esc(s.prot)} protein. ${esc(s.use)}</span></div>`).join('')+'</div>')
+  +S('Priorities in order',PRIORITIES.map(p=>`<div class="q"><b>${p.n}. ${esc(p.f)}</b><span>${esc(p.w)}</span></div>`).join(''))
+  +S('Progressive overload','<div class="q"><b>Double progression</b><span>Pick a rep range like 8-12. Add one rep per week. When every set hits the top of the range, add weight and restart at the bottom. Count only reps where you controlled the way down.</span></div>')
+  +S('Week by week',MILESTONES.map(m=>`<div class="q"><b>Weeks ${m.weeks}: ${esc(m.label)}</b><span>${m.text}</span></div>`).join(''))
+  +S('Backup and restore','<p>Your logs live in this browser only. Copy a backup and keep it in Notes. To restore, paste it below and tap Restore. Old exports from the previous version work too.</p><textarea id="bk" aria-label="Backup text" placeholder="Paste backup here"></textarea><div class="row" style="margin-top:10px"><button class="btn" type="button" id="cp">Copy backup</button><button class="btn pri" type="button" id="rs">Restore</button></div>');
+}
+const TT={train:'Training',weight:'Weight',meals:'Meals',help:'Help'};
+function render(){
+  const t=st.tab;$('#ttl').textContent=TT[t];
+  $('#sub').textContent=t=='train'||t=='weight'?`Week ${st.week} of 12, ${LBL(st.week)}`:t=='meals'?'Same meals every day, one workout row':'Answers and reference';
+  $('.top').querySelector('.weeks').hidden=!(t=='train'||t=='weight');
+  $('#editBtn').hidden=!(t=='train'||t=='weight');
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.toggleAttribute('aria-current',b.dataset.tab==t)||0);
+  document.querySelectorAll('nav.tabs button').forEach(b=>{if(b.dataset.tab==t)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+  const m=$('#main');m.innerHTML=({train,weight,meals,help})[t]();m.style.animation='none';void m.offsetWidth;m.style.animation='';
+  if(t=='train'||t=='weight')drawWeeks();
+}
+function go(t){st.tab=t;render();window.scrollTo(0,0)}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.tab)return go(d.tab);
+  if(d.wk){st.week=+d.wk;keepUI();render();if(b.classList.contains('wc'))window.scrollTo(0,0);return}
+  if(d.sc){const ex=Object.values(EXERCISES).flat().find(x=>exKey(x.name)==d.sc),c=(LD[d.sc]||{})['w'+st.week]||{},used=SK.reduce((a,s,i)=>c[s]?i+1:a,0),cur=Math.max(SC[d.sc]||defSets(ex),used);if(+d.d<0&&cur<=used)return toast('Clear set '+cur+' first');SC[d.sc]=Math.min(6,Math.max(1,cur+ +d.d));save('sc3',SC);return render()}
+  if(d.day){st.day=d.day;return render()}
+  if(d.ph){st.phase=+d.ph;keepUI();return render()}
+  if(d.dt){st.dt=d.dt;return render()}
+  if(b.id=='cp'){const j=JSON.stringify({weightData:WD,liftData:LD,measData:MD,setCounts:SC}),t=$('#bk');t.value=j;t.select();try{navigator.clipboard.writeText(j)}catch(x){}toast('Backup ready to copy')}
+  if(b.id=='rs'){try{const o=JSON.parse($('#bk').value);if(o.weightData){WD=o.weightData;save('wd2',WD)}if(o.liftData){LD=o.liftData;save('ld2',LD)}if(o.measData){MD=o.measData;save('md2',MD)}if(o.setCounts){SC=o.setCounts;save('sc3',SC)}toast('Backup restored')}catch(x){toast('That text is not a valid backup')}}
+});
+document.addEventListener('input',e=>{
+  const t=e.target,d=t.dataset;
+  if(d.s){const l=LD[d.k]=LD[d.k]||{},c=l['w'+st.week]=l['w'+st.week]||{};c[d.s]=t.value;save('ld2',LD);const p=$('#pr-'+d.k);if(p)p.hidden=!isPR(d.k,st.week)}
+  else if(d.ln){const l=LD[d.k]=LD[d.k]||{},c=l['w'+st.week]=l['w'+st.week]||{};c.note=t.value;save('ld2',LD)}
+  else if(d.wd!=null||d.wn!=null){const w=WD['w'+st.week]=WD['w'+st.week]||{};if(d.wd!=null)w['d'+d.wd]=t.value;else w['n'+d.wn]=t.value;save('wd2',WD);const a=avg(st.week);$('#avg').textContent=f1(a)}
+  else if(d.m){const m=MD[d.m]=MD[d.m]||{};m[d.i]=t.value===''?null:parseFloat(t.value);save('md2',MD)}
+});
+let tt,undo=null;
+function toast(msg,u){const el=$('#toast');el.firstElementChild.textContent=msg;el.lastElementChild.hidden=!u;el.hidden=false;clearTimeout(tt);tt=setTimeout(()=>{el.hidden=true;undo=null},u?9000:2800)}
+$('#toast button').onclick=()=>{if(!undo)return;LD=JSON.parse(undo.ld);WD=JSON.parse(undo.wd);save('ld2',LD);save('wd2',WD);undo=null;$('#toast').hidden=true;render()};
+/* Edit weeks */
+const dlg=$('#dlg');let sel=new Set(),armed=false;
+const drawChips=()=>{$('#chips').innerHTML=Array.from({length:WEEKS},(_,i)=>i+1).map(w=>`<button type="button" data-c="${w}" aria-pressed="${sel.has(w)}" aria-label="Week ${w}">${w}</button>`).join('');$('#apply').textContent='Apply';armed=false};
+$('#editBtn').onclick=()=>{sel=new Set([st.week]);drawChips();dlg.showModal()};
+$('#chips').onclick=e=>{const b=e.target.closest('button');if(!b)return;const w=+b.dataset.c;sel.has(w)?sel.delete(w):sel.add(w);drawChips()};
+$('#allBtn').onclick=()=>{sel=sel.size==WEEKS?new Set():new Set(Array.from({length:WEEKS},(_,i)=>i+1));drawChips()};
+$('#cancel').onclick=()=>dlg.close();
+$('#wSel').onchange=e=>{st.week=+e.target.value;keepUI();render()};
+$('#wPrev').onclick=()=>{if(st.week>1){st.week--;keepUI();render()}};
+$('#wNext').onclick=()=>{if(st.week<WEEKS){st.week++;keepUI();render()}};
+dlg.addEventListener('change',()=>{armed=false;$('#apply').textContent='Apply'});
+$('#apply').onclick=()=>{
+  if(!sel.size)return toast('Pick at least one week');
+  const ws=[...sel].sort((a,b)=>a-b),lift=dlg.querySelector('[name=lift]:checked').value,bw=dlg.querySelector('[name=bw]:checked').value;
+  if(lift=='none'&&bw=='none')return toast('Nothing selected to change');
+  if(!armed){armed=true;$('#apply').textContent='Tap again to confirm';return}
+  undo={ld:JSON.stringify(LD),wd:JSON.stringify(WD)};
+  ws.forEach(w=>{
+    if(lift!='none')Object.keys(LD).forEach(k=>{const e=LD[k]['w'+w];if(!e)return;if(lift=='all')delete LD[k]['w'+w];else{SK.forEach(s=>{const m=String(e[s]||'').match(/^\s*(\d+\.?\d*)/);e[s]=m?m[1]+'x':''});delete e.note}});
+    if(bw=='clear')delete WD['w'+w];
+  });
+  save('ld2',LD);save('wd2',WD);dlg.close();render();toast('Reset week'+(ws.length>1?'s ':' ')+ws.join(', '),1);
+};
+render();
+</script>
+
+<script>
+/* register the offline cache */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('./sw.js').catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
